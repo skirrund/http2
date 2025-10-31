@@ -1,4 +1,4 @@
-module github.com/hertz-contrib/http2
+module github.com/skirrund/hertz-http2
 
 go 1.25
 

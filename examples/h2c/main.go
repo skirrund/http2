@@ -27,8 +27,8 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/client"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/protocol"
-	"github.com/hertz-contrib/http2/config"
-	"github.com/hertz-contrib/http2/factory"
+	"github.com/skirrund/hertz-http2/config"
+	"github.com/skirrund/hertz-http2/factory"
 )
 
 func runClient() {

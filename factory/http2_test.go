@@ -34,8 +34,8 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/test/mock"
 	"github.com/cloudwego/hertz/pkg/network/standard"
 	"github.com/cloudwego/hertz/pkg/protocol"
-	"github.com/hertz-contrib/http2"
-	"github.com/hertz-contrib/http2/config"
+	http2 "github.com/skirrund/hertz-http2"
+	"github.com/skirrund/hertz-http2/config"
 )
 
 func TestClientIP(t *testing.T) {

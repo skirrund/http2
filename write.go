@@ -29,9 +29,9 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/hertz-contrib/http2/hpack"
-	"github.com/hertz-contrib/http2/internal/bytesconv"
-	consts2 "github.com/hertz-contrib/http2/internal/consts"
+	"github.com/skirrund/hertz-http2/hpack"
+	"github.com/skirrund/hertz-http2/internal/bytesconv"
+	consts2 "github.com/skirrund/hertz-http2/internal/consts"
 )
 
 // writeFramer is implemented by any type that is used to write frames.

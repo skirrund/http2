@@ -25,7 +25,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/network/netpoll"
 	"github.com/cloudwego/hertz/pkg/protocol/client"
 	hertz_consts "github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/hertz-contrib/http2/internal/consts"
+	"github.com/skirrund/hertz-http2/internal/consts"
 )
 
 // ClientOption is the only struct that can be used to set HTTP2 ClientConfig.

@@ -19,8 +19,8 @@ package factory
 import (
 	"github.com/cloudwego/hertz/pkg/protocol"
 	"github.com/cloudwego/hertz/pkg/protocol/suite"
-	"github.com/hertz-contrib/http2"
-	"github.com/hertz-contrib/http2/config"
+	http2 "github.com/skirrund/hertz-http2"
+	"github.com/skirrund/hertz-http2/config"
 )
 
 var _ suite.ServerFactory = &serverFactory{}

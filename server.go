@@ -69,10 +69,10 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/cloudwego/hertz/pkg/protocol/suite"
-	"github.com/hertz-contrib/http2/config"
-	"github.com/hertz-contrib/http2/hpack"
-	"github.com/hertz-contrib/http2/internal/bytesconv"
-	"github.com/hertz-contrib/http2/internal/bytestr"
+	"github.com/skirrund/hertz-http2/config"
+	"github.com/skirrund/hertz-http2/hpack"
+	"github.com/skirrund/hertz-http2/internal/bytesconv"
+	"github.com/skirrund/hertz-http2/internal/bytestr"
 )
 
 const (

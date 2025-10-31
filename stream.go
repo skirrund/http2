@@ -25,7 +25,7 @@ import (
 	"time"
 
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/hertz-contrib/http2/internal/bytesconv"
+	"github.com/skirrund/hertz-http2/internal/bytesconv"
 )
 
 // stream represents a stream. This is the minimal metadata needed by

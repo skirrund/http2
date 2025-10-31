@@ -30,7 +30,7 @@ import (
 	"sync"
 
 	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"github.com/hertz-contrib/http2/hpack"
+	"github.com/skirrund/hertz-http2/hpack"
 	"golang.org/x/net/http/httpguts"
 )
 

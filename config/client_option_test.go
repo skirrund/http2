@@ -21,7 +21,7 @@ import (
 	"time"
 
 	"github.com/cloudwego/hertz/pkg/common/test/assert"
-	"github.com/hertz-contrib/http2/internal/consts"
+	"github.com/skirrund/hertz-http2/internal/consts"
 )
 
 func TestClientOptions(t *testing.T) {

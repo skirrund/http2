@@ -29,7 +29,7 @@ import (
 	"testing"
 	"unsafe"
 
-	"github.com/hertz-contrib/http2/hpack"
+	"github.com/skirrund/hertz-http2/hpack"
 )
 
 func testFramer() (*Framer, *bytes.Buffer) {
