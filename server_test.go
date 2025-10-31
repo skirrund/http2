@@ -28,7 +28,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -63,7 +62,7 @@ func stderrv() io.Writer {
 		return os.Stderr
 	}
 
-	return ioutil.Discard
+	return io.Discard
 }
 
 type hertzServerTester struct {
@@ -411,7 +410,7 @@ func newStandardServerTester(t testing.TB, handler http.HandlerFunc, opts ...int
 
 	ts.TLS = ts.Config.TLSConfig // the httptest.Server has its own copy of this TLS config
 	if quiet {
-		ts.Config.ErrorLog = log.New(ioutil.Discard, "", 0)
+		ts.Config.ErrorLog = log.New(io.Discard, "", 0)
 	} else {
 		ts.Config.ErrorLog = log.New(io.MultiWriter(stderrv(), twriter{t: t, filter: st}, &st.serverLogBuf), "", log.LstdFlags)
 	}
@@ -915,7 +914,7 @@ func testBodyContents(t *testing.T, wantContentLength int64, wantBody string, wr
 		if int64(ctx.Request.Header.ContentLength()) != wantContentLength {
 			t.Errorf("ContentLength = %v; want %d", ctx.Request.Header.ContentLength(), wantContentLength)
 		}
-		all, err := ioutil.ReadAll(ctx.Request.BodyStream())
+		all, err := io.ReadAll(ctx.Request.BodyStream())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -936,7 +935,7 @@ func testBodyContentsFail(t *testing.T, wantContentLength int64, wantReadError s
 		if int64(ctx.Request.Header.ContentLength()) != wantContentLength {
 			t.Errorf("ContentLength = %v; want %d", ctx.Request.Header.ContentLength(), wantContentLength)
 		}
-		all, err := ioutil.ReadAll(ctx.Request.BodyStream())
+		all, err := io.ReadAll(ctx.Request.BodyStream())
 		if err == nil {
 			t.Fatalf("expected an error (%q) reading from the body. Successfully read %q instead.",
 				wantReadError, all)
@@ -2597,7 +2596,7 @@ func TestServerReadsTrailers(t *testing.T) {
 				t.Errorf("initial Trailer %q = %q; want %q", k, actualKey, v)
 			}
 		}
-		slurp, err := ioutil.ReadAll(ctx.Request.BodyStream())
+		slurp, err := io.ReadAll(ctx.Request.BodyStream())
 		if string(slurp) != testBody {
 			t.Errorf("read body %q; want %q", slurp, testBody)
 		}
@@ -2758,7 +2757,7 @@ func BenchmarkServerPosts(b *testing.B) {
 		// Consume the (empty) body from th peer before replying, otherwise
 		// the server will sometimes (depending on scheduling) send the peer a
 		// a RST_STREAM with the CANCEL error code.
-		if n, err := io.Copy(ioutil.Discard, ctx.Request.BodyStream()); n != 0 || err != nil {
+		if n, err := io.Copy(io.Discard, ctx.Request.BodyStream()); n != 0 || err != nil {
 			b.Errorf("Copy error; got %v, %v; want 0, nil", n, err)
 		}
 		ctx.WriteString(msg)
@@ -2822,7 +2821,7 @@ func benchmarkServerToClientStream(b *testing.B, newServerOpts ...interface{}) {
 		// Consume the (empty) body from th peer before replying, otherwise
 		// the server will sometimes (depending on scheduling) send the peer a
 		// a RST_STREAM with the CANCEL error code.
-		if n, err := io.Copy(ioutil.Discard, ctx.Response.BodyStream()); n != 0 || err != nil {
+		if n, err := io.Copy(io.Discard, ctx.Response.BodyStream()); n != 0 || err != nil {
 			b.Errorf("Copy error; got %v, %v; want 0, nil", n, err)
 		}
 		for i := 0; i < b.N; i += 1 {
@@ -2905,7 +2904,7 @@ func BenchmarkServer_GetRequest(b *testing.B) {
 	b.ReportAllocs()
 	const msg = "Hello, world."
 	st := newHertzServerTester(b, func(c context.Context, ctx *app.RequestContext) {
-		n, err := io.Copy(ioutil.Discard, ctx.Request.BodyStream())
+		n, err := io.Copy(io.Discard, ctx.Request.BodyStream())
 		if err != nil || n > 0 {
 			b.Errorf("Read %d bytes, error %v; want 0 bytes.", n, err)
 		}
@@ -2937,7 +2936,7 @@ func BenchmarkServer_PostRequest(b *testing.B) {
 	b.ReportAllocs()
 	const msg = "Hello, world."
 	st := newHertzServerTester(b, func(c context.Context, ctx *app.RequestContext) {
-		n, err := io.Copy(ioutil.Discard, ctx.Request.BodyStream())
+		n, err := io.Copy(io.Discard, ctx.Request.BodyStream())
 		if err != nil || n > 0 {
 			b.Errorf("Read %d bytes, error %v; want 0 bytes.", n, err)
 		}
@@ -3273,7 +3272,7 @@ func TestIssue20704Race(t *testing.T) {
 
 func TestServer_Rejects_TooSmall(t *testing.T) {
 	testServerResponse(t, func(c context.Context, ctx *app.RequestContext) error {
-		ioutil.ReadAll(ctx.Request.BodyStream())
+		io.ReadAll(ctx.Request.BodyStream())
 		return nil
 	}, func(st *hertzServerTester) {
 		st.writeHeaders(HeadersFrameParam{

@@ -42,7 +42,6 @@
 package bytesconv
 
 import (
-	"reflect"
 	"unsafe"
 )
 
@@ -54,8 +53,7 @@ const ToLowerTable = "\x00\x01\x02\x03\x04\x05\x06\a\b\t\n\v\f\r\x0e\x0f\x10\x11
 // Note it may break if string and/or slice header will change
 // in the future go versions.
 func B2s(b []byte) string {
-	/* #nosec G103 */
-	return *(*string)(unsafe.Pointer(&b))
+	return unsafe.String(&b[0], len(b))
 }
 
 // S2b converts string to a byte slice without memory allocation.
@@ -63,18 +61,11 @@ func B2s(b []byte) string {
 // Note it may break if string and/or slice header will change
 // in the future go versions.
 func S2b(s string) (b []byte) {
-	/* #nosec G103 */
-	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
-	/* #nosec G103 */
-	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
-	bh.Data = sh.Data
-	bh.Len = sh.Len
-	bh.Cap = sh.Len
-	return b
+	return unsafe.Slice(unsafe.StringData(s), len(s))
 }
 
 func LowercaseBytes(b []byte) {
-	for i := 0; i < len(b); i++ {
+	for i := range b {
 		p := &b[i]
 		*p = ToLowerTable[*p]
 	}

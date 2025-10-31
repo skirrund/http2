@@ -30,7 +30,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"math"
 	"net"
 	"net/http"
@@ -82,7 +81,7 @@ const (
 	defaultMaxConcurrentStreams = 1000
 )
 
-var noBody io.ReadCloser = ioutil.NopCloser(bytes.NewReader(nil))
+var noBody io.ReadCloser = io.NopCloser(bytes.NewReader(nil))
 
 type missingBody struct{}
 

@@ -56,7 +56,7 @@ func TestClientIP(t *testing.T) {
 
 	h.POST("/", func(c context.Context, ctx *app.RequestContext) {
 		assert.DeepEqual(t, "127.0.0.1", ctx.ClientIP())
-		ctx.JSON(http.StatusOK, map[string]interface{}{"ping": "pong"})
+		ctx.JSON(http.StatusOK, map[string]any{"ping": "pong"})
 	})
 
 	go h.Spin()

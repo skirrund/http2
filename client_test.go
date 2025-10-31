@@ -29,7 +29,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net"
@@ -254,7 +253,7 @@ func TestHostClientH2c(t *testing.T) {
 		t.Fatalf("response protocol go %v, want %vj", rsp.Header.GetProtocol(), consts.HTTP20)
 	}
 
-	body, err := ioutil.ReadAll(rsp.BodyStream())
+	body, err := io.ReadAll(rsp.BodyStream())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -326,7 +325,7 @@ func TestHostClient(t *testing.T) {
 		if !isEqual {
 			t.Error("res header doesn't equal to wantHeader")
 		}
-		slurp, err := ioutil.ReadAll(res.BodyStream())
+		slurp, err := io.ReadAll(res.BodyStream())
 		if err != nil {
 			t.Errorf("%d: Body read: %v", i, err)
 		} else if string(slurp) != body {
@@ -368,7 +367,7 @@ func testHostClientReusesConns(t *testing.T, wantSame bool, modReq func(*protoco
 			t.Fatal(err)
 		}
 
-		slurp, err := ioutil.ReadAll(rsp.BodyStream())
+		slurp, err := io.ReadAll(rsp.BodyStream())
 		if err != nil {
 			t.Fatalf("Body read: %v", err)
 		}
@@ -583,7 +582,7 @@ func TestHostClientAbortClosesPipes(t *testing.T) {
 		// because we can't close server conn here, so close the client conn instead.
 		// st.closeConn()
 		tr.conns.Front().Value.(*clientConn).tconn.Close()
-		_, err = ioutil.ReadAll(rsp.BodyStream())
+		_, err = io.ReadAll(rsp.BodyStream())
 		if err == nil {
 			errCh <- errors.New("expected error from res.Body.Read")
 			return
@@ -1001,7 +1000,7 @@ func testHostClientReqBodyAfterResponse(t *testing.T, status int) {
 		}
 		io.Copy(body, io.LimitReader(neverEnding('A'), bodySize/2))
 		body.CloseWithError(io.EOF)
-		slurp, err := ioutil.ReadAll(rsp.BodyStream())
+		slurp, err := io.ReadAll(rsp.BodyStream())
 		if err != nil {
 			return fmt.Errorf("Slurp: %v", err)
 		}
@@ -1301,7 +1300,7 @@ func testHostClientResPattern(t *testing.T, expect100Continue, resHeader headerT
 		if rsp.StatusCode() != 200 {
 			return fmt.Errorf("status code = %v; want 200", rsp.StatusCode())
 		}
-		slurp, err := ioutil.ReadAll(rsp.BodyStream())
+		slurp, err := io.ReadAll(rsp.BodyStream())
 		if err != nil {
 			return fmt.Errorf("Slurp: %v", err)
 		}
@@ -1573,11 +1572,11 @@ func TestHostClientChecksRequestHeaderListSize(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			// Consume body & force client to send
 			// trailers before writing response.
-			// ioutil.ReadAll returns non-nil err for
+			// io.ReadAll returns non-nil err for
 			// requests that attempt to send greater than
 			// maxHeaderListSize bytes of trailers, since
 			// those requests generate a stream reset.
-			ioutil.ReadAll(r.Body)
+			io.ReadAll(r.Body)
 			r.Body.Close()
 		},
 		func(ts *httptest.Server) {
@@ -2414,7 +2413,7 @@ func TestHostClientReadHeadResponse(t *testing.T) {
 		if rsp.Header.ContentLength() != 123 {
 			return fmt.Errorf("Content-Length = %d; want 123", rsp.Header.ContentLength())
 		}
-		slurp, err := ioutil.ReadAll(rsp.BodyStream())
+		slurp, err := io.ReadAll(rsp.BodyStream())
 		if err != nil {
 			return fmt.Errorf("ReadAll: %v", err)
 		}
@@ -2457,7 +2456,7 @@ func TestHostClientReadHeadResponse(t *testing.T) {
 func TestHostClientReadHeadResponseWithBody(t *testing.T) {
 	// This test use not valid response format.
 	// Discarding logger output to not spam tests output.
-	log.SetOutput(ioutil.Discard)
+	log.SetOutput(io.Discard)
 	defer log.SetOutput(os.Stderr)
 
 	response := "redirecting to /elsewhere"
@@ -2475,7 +2474,7 @@ func TestHostClientReadHeadResponseWithBody(t *testing.T) {
 		if rsp.Header.ContentLength() != len(response) {
 			return fmt.Errorf("Content-Length = %d; want %d", rsp.Header.ContentLength(), len(response))
 		}
-		slurp, err := ioutil.ReadAll(rsp.BodyStream())
+		slurp, err := io.ReadAll(rsp.BodyStream())
 		if err != nil {
 			return fmt.Errorf("ReadAll: %v", err)
 		}
@@ -2556,7 +2555,7 @@ func TestHostClientHandlerBodyClose(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		n, err := io.Copy(ioutil.Discard, rsp.BodyStream())
+		n, err := io.Copy(io.Discard, rsp.BodyStream())
 		if n != bodySize || err != nil {
 			t.Fatalf("req#%d: Copy = %d, %v; want %d, nil", i, n, err, bodySize)
 		}
@@ -2659,7 +2658,7 @@ func testHostClientUsesGoAwayDebugError(t *testing.T, failMidBody bool) {
 			if err != nil {
 				return fmt.Errorf("unexpected client RoundTrip error: %v", err)
 			}
-			_, err = io.Copy(ioutil.Discard, rsp.BodyStream())
+			_, err = io.Copy(io.Discard, rsp.BodyStream())
 		}
 		want := GoAwayError{
 			LastStreamID: 5,
@@ -3155,7 +3154,7 @@ func TestRoundTripDoesntConsumeRequestBodyEarly(t *testing.T) {
 	if err != errClientConnUnusable {
 		t.Fatalf("RoundTrip = %v; want errClientConnUnusable", err)
 	}
-	slurp, err := ioutil.ReadAll(req.BodyStream())
+	slurp, err := io.ReadAll(req.BodyStream())
 	if err != nil {
 		t.Errorf("ReadAll = %v", err)
 	}
@@ -3226,7 +3225,7 @@ func TestHostClientCancelDataResponseRace(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err = io.Copy(ioutil.Discard, rsp.BodyStream()); err == nil {
+	if _, err = io.Copy(io.Discard, rsp.BodyStream()); err == nil {
 		t.Fatal("unexpected success")
 	}
 	clientGotError <- true
@@ -3238,7 +3237,7 @@ func TestHostClientCancelDataResponseRace(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	slurp, err := ioutil.ReadAll(rsp.BodyStream())
+	slurp, err := io.ReadAll(rsp.BodyStream())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3270,7 +3269,7 @@ func TestHostClientNoRaceOnRequestObjectAfterRequestComplete(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err = io.Copy(ioutil.Discard, rsp.BodyStream()); err != nil {
+	if _, err = io.Copy(io.Discard, rsp.BodyStream()); err != nil {
 		t.Fatalf("error reading response body: %v", err)
 	}
 
@@ -3402,7 +3401,7 @@ func testHostClientPingWhenReading(t *testing.T, readIdleTimeout, deadline time.
 		if rsp.StatusCode() != 200 {
 			return fmt.Errorf("status code = %v; want %v", rsp.StatusCode(), 200)
 		}
-		_, err = ioutil.ReadAll(rsp.BodyStream())
+		_, err = io.ReadAll(rsp.BodyStream())
 		if expectedPingCount == 0 && errors.Is(ctx.Err(), context.DeadlineExceeded) {
 			return nil
 		}
@@ -3716,7 +3715,7 @@ func TestHostClientRetryHasLimit(t *testing.T) {
 func TestHostClientResponseDataBeforeHeaders(t *testing.T) {
 	// This test use not valid response format.
 	// Discarding logger output to not spam tests output.
-	log.SetOutput(ioutil.Discard)
+	log.SetOutput(io.Discard)
 	defer log.SetOutput(os.Stderr)
 
 	ct := newClientTester(t)
@@ -3935,7 +3934,7 @@ func TestHostClientRequestsStallAtServerLimit(t *testing.T) {
 						errs <- fmt.Errorf("RoundTrip(%d): %v", k, err)
 						return
 					}
-					ioutil.ReadAll(rsp.BodyStream())
+					io.ReadAll(rsp.BodyStream())
 					rsp.CloseBodyStream()
 					if rsp.StatusCode() != 204 {
 						errs <- fmt.Errorf("Status = %v; want 204", rsp.StatusCode())
@@ -4357,7 +4356,7 @@ func testClientConnClose(t *testing.T, closeMode closeMode) {
 	case closeAtHeaders, closeAtBody:
 		if closeMode == closeAtBody {
 			go close(sendBody)
-			if _, err := io.Copy(ioutil.Discard, rsp.BodyStream()); err == nil {
+			if _, err := io.Copy(io.Discard, rsp.BodyStream()); err == nil {
 				t.Error("expected a Copy error, got nil")
 			}
 		}
@@ -4793,7 +4792,7 @@ func newCloseChecker(r io.ReadCloser) *closeChecker {
 }
 
 func newStaticCloseChecker(body string) *closeChecker {
-	return newCloseChecker(ioutil.NopCloser(strings.NewReader("body")))
+	return newCloseChecker(io.NopCloser(strings.NewReader("body")))
 }
 
 func (rc *closeChecker) Read(b []byte) (n int, err error) {
@@ -5185,7 +5184,7 @@ func TestHostClientContentLengthWithoutBody(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			body, err := ioutil.ReadAll(rsp.BodyStream())
+			body, err := io.ReadAll(rsp.BodyStream())
 
 			if err != test.wantErr {
 				t.Errorf("Expected error %v, got: %v", test.wantErr, err)
@@ -5204,7 +5203,7 @@ func TestHostClientCloseResponseBodyWhileRequestBodyHangs(t *testing.T) {
 	st := newStandardServerTester(t, func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.(http.Flusher).Flush()
-		io.Copy(ioutil.Discard, r.Body)
+		io.Copy(io.Discard, r.Body)
 	}, optOnlyServer)
 	defer st.Close()
 
@@ -5256,7 +5255,7 @@ func TestHostClient300ResponseBody(t *testing.T) {
 		t.Fatal(err)
 	}
 	close(reqc)
-	got, err := ioutil.ReadAll(rsp.BodyStream())
+	got, err := io.ReadAll(rsp.BodyStream())
 	if err != nil {
 		t.Fatalf("error reading response body: %v", err)
 	}
