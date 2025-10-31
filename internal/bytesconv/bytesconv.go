@@ -53,7 +53,10 @@ const ToLowerTable = "\x00\x01\x02\x03\x04\x05\x06\a\b\t\n\v\f\r\x0e\x0f\x10\x11
 // Note it may break if string and/or slice header will change
 // in the future go versions.
 func B2s(b []byte) string {
-	return unsafe.String(&b[0], len(b))
+	if len(b) > 0 {
+		return unsafe.String(&b[0], len(b))
+	}
+	return ""
 }
 
 // S2b converts string to a byte slice without memory allocation.
