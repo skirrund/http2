@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package http2
+package hertz-http2
 
 import (
 	"github.com/cloudwego/hertz/pkg/common/tracer/stats"

@@ -20,7 +20,7 @@
 
 // Flow control
 
-package http2
+package hertz-http2
 
 // flow is the flow control window's size.
 type flow struct {
