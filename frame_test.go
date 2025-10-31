@@ -922,7 +922,7 @@ func TestMetaFrameHeader(t *testing.T) {
 	tests := [...]struct {
 		name              string
 		w                 func(*Framer)
-		want              interface{} // *MetaHeaderFrame or error
+		want              any // *MetaHeaderFrame or error
 		wantErrReason     string
 		maxHeaderListSize uint32
 	}{

@@ -91,7 +91,7 @@ var (
 )
 
 var responseWriterStatePool = sync.Pool{
-	New: func() interface{} {
+	New: func() any {
 		rws := &responseWriterState{}
 		rws.bw = bufio.NewWriterSize(chunkWriter{rws}, handlerChunkWriteSize)
 		return rws
