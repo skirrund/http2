@@ -39,7 +39,7 @@
 // the Handler ServeHTTP function means you're both done reading and
 // done writing, without a way to stop just one or the other.
 
-package hertz-http2
+package http2
 
 import (
 	"bufio"

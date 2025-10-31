@@ -18,28 +18,23 @@
  * license that can be found in the LICENSE file.
  */
 
-package hertz-http2
+package http2
 
-import (
-	"fmt"
-	"strings"
-	"testing"
-)
+import "testing"
 
-func TestGoroutineLock(t *testing.T) {
-	g := newGoroutineLock()
-	g.check()
-
-	sawPanic := make(chan interface{})
-	go func() {
-		defer func() { sawPanic <- recover() }()
-		g.check() // should panic
-	}()
-	e := <-sawPanic
-	if e == nil {
-		t.Fatal("did not see panic from check in other goroutine")
+func TestErrCodeString(t *testing.T) {
+	tests := []struct {
+		err  ErrCode
+		want string
+	}{
+		{ErrCodeProtocol, "PROTOCOL_ERROR"},
+		{0xd, "HTTP_1_1_REQUIRED"},
+		{0xf, "unknown error code 0xf"},
 	}
-	if !strings.Contains(fmt.Sprint(e), "wrong goroutine") {
-		t.Errorf("expected on see panic about running on the wrong goroutine; got %v", e)
+	for i, tt := range tests {
+		got := tt.err.String()
+		if got != tt.want {
+			t.Errorf("%d. Error = %q; want %q", i, got, tt.want)
+		}
 	}
 }

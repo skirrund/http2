@@ -18,7 +18,7 @@
  * license that can be found in the LICENSE file.
  */
 
-package hertz-http2
+package http2
 
 import (
 	"fmt"

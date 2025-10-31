@@ -18,7 +18,7 @@
  * license that can be found in the LICENSE file.
  */
 
-package hertz-http2
+package http2
 
 // A list of the possible cipher suite ids. Taken from
 // https://www.iana.org/assignments/tls-parameters/tls-parameters.txt
